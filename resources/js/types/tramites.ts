@@ -13,6 +13,13 @@ export type Category = {
 
 export type GuideStatus = 'draft' | 'published';
 
+export type GuideStep = {
+    text: string;
+    link: string | null;
+    link_label: string | null;
+    image: string | null;
+};
+
 export type Guide = {
     id: number;
     category_id: number;
@@ -23,6 +30,7 @@ export type Guide = {
     cost: string | null;
     where_to_go: string | null;
     requirements: string[] | null;
+    steps: GuideStep[] | null;
     source_url: string | null;
     status: GuideStatus;
     published_at: string | null;

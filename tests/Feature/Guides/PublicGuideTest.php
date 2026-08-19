@@ -101,3 +101,25 @@ test('a draft guide 404s for visitors', function () {
 
     $response->assertNotFound();
 });
+
+test('a guide with structured steps exposes them to the page', function () {
+    $this->withoutVite();
+
+    $guide = Guide::factory()->create([
+        'status' => GuideStatus::Published,
+        'steps' => [
+            ['text' => 'Agenda tu cita', 'link' => 'https://www.reniec.gob.pe', 'link_label' => 'Agendar cita', 'image' => null],
+            ['text' => 'Paga la tasa', 'link' => null, 'link_label' => null, 'image' => null],
+        ],
+    ]);
+
+    $response = $this->get(route('guides.show', $guide->slug));
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->has('guide.steps', 2)
+        ->where('guide.steps.0.text', 'Agenda tu cita')
+        ->where('guide.steps.0.link', 'https://www.reniec.gob.pe')
+        ->where('guide.steps.1.link', null)
+    );
+});

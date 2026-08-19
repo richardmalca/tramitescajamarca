@@ -18,10 +18,9 @@ createInertiaApp({
                 return [AppLayout, SettingsLayout];
             case name.startsWith('admin/'):
                 return AppLayout;
-            // Public pages (home, guides/*) provide their own light layout —
-            // no admin shell, no theme switching.
-            case name === 'home':
-            case name.startsWith('guides/'):
+            // Public pages provide their own light layout — no admin shell,
+            // no theme switching.
+            case name.startsWith('public/'):
                 return null;
             default:
                 return AppLayout;

@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Services\TelegramErrorReporter;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -27,4 +28,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        // Fires the instant an exception is reported — no scheduler, no
+        // queue, no cron. `reportable()` doesn't stop the default log
+        // write, it just runs alongside it.
+        $exceptions->reportable(function (Throwable $e): void {
+            if (app()->environment('production')) {
+                app(TelegramErrorReporter::class)->report($e);
+            }
+        });
     })->create();

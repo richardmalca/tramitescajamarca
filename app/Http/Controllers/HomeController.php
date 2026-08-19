@@ -17,7 +17,7 @@ class HomeController extends Controller
 
     public function index(Request $request): Response
     {
-        return Inertia::render('home', [
+        return Inertia::render('public/home', [
             'categories' => $this->categories->listWithPublishedGuides(),
             'recentGuides' => $this->guides->search(null, null, 6)->items(),
         ]);

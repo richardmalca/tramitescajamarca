@@ -27,6 +27,11 @@ class StoreGuideRequest extends FormRequest
             'where_to_go' => ['nullable', 'string', 'max:255'],
             'requirements' => ['sometimes', 'array'],
             'requirements.*' => ['string', 'max:255'],
+            'steps' => ['sometimes', 'array'],
+            'steps.*.text' => ['required', 'string', 'max:500'],
+            'steps.*.link' => ['nullable', 'url', 'max:255'],
+            'steps.*.link_label' => ['nullable', 'string', 'max:100'],
+            'steps.*.image' => ['nullable', 'url', 'max:255'],
             'source_url' => ['nullable', 'url', 'max:255'],
             'status' => ['required', Rule::enum(GuideStatus::class)],
         ];
@@ -45,6 +50,7 @@ class StoreGuideRequest extends FormRequest
             'cost' => 'costo',
             'where_to_go' => 'dónde se hace',
             'requirements' => 'requisitos',
+            'steps' => 'pasos',
             'source_url' => 'fuente',
             'status' => 'estado',
         ];

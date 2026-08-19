@@ -93,6 +93,48 @@ test('an admin can delete a guide', function () {
     expect(Guide::find($guide->id))->toBeNull();
 });
 
+test('an admin can create a guide with structured steps', function () {
+    $admin = adminUser();
+    $category = Category::factory()->create();
+
+    $response = $this->actingAs($admin)->post(route('admin.guides.store'), [
+        'category_id' => $category->id,
+        'title' => 'Sacar tu licencia de conducir',
+        'summary' => 'Resumen',
+        'content' => 'Contenido',
+        'status' => 'published',
+        'steps' => [
+            ['text' => 'Agenda tu cita', 'link' => 'https://www.reniec.gob.pe', 'link_label' => 'Agendar cita', 'image' => null],
+            ['text' => 'Paga la tasa', 'link' => null, 'link_label' => null, 'image' => null],
+        ],
+    ]);
+
+    $response->assertRedirect(route('admin.guides.index'));
+
+    $guide = Guide::where('title', 'Sacar tu licencia de conducir')->firstOrFail();
+    expect($guide->steps)->toHaveCount(2);
+    expect($guide->steps[0]['text'])->toBe('Agenda tu cita');
+    expect($guide->steps[0]['link'])->toBe('https://www.reniec.gob.pe');
+});
+
+test('a guide step link must be a valid url', function () {
+    $admin = adminUser();
+    $category = Category::factory()->create();
+
+    $response = $this->actingAs($admin)->post(route('admin.guides.store'), [
+        'category_id' => $category->id,
+        'title' => 'Trámite con link inválido',
+        'summary' => 'Resumen',
+        'content' => 'Contenido',
+        'status' => 'published',
+        'steps' => [
+            ['text' => 'Paso con link roto', 'link' => 'no-es-una-url', 'link_label' => null, 'image' => null],
+        ],
+    ]);
+
+    $response->assertSessionHasErrors('steps.0.link');
+});
+
 test('a non-admin cannot create a guide', function () {
     $user = User::factory()->create(['is_admin' => false]);
     $category = Category::factory()->create();

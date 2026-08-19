@@ -22,13 +22,14 @@ use Illuminate\Support\Carbon;
  * @property string|null $cost
  * @property string|null $where_to_go
  * @property array<int, string>|null $requirements
+ * @property array<int, array{text: string, link: string|null, link_label: string|null, image: string|null}>|null $steps
  * @property string|null $source_url
  * @property GuideStatus $status
  * @property Carbon|null $published_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['category_id', 'created_by', 'title', 'slug', 'summary', 'content', 'cost', 'where_to_go', 'requirements', 'source_url', 'status', 'published_at'])]
+#[Fillable(['category_id', 'created_by', 'title', 'slug', 'summary', 'content', 'cost', 'where_to_go', 'requirements', 'steps', 'source_url', 'status', 'published_at'])]
 class Guide extends Model
 {
     /** @use HasFactory<GuideFactory> */
@@ -41,6 +42,7 @@ class Guide extends Model
     {
         return [
             'requirements' => 'array',
+            'steps' => 'array',
             'status' => GuideStatus::class,
             'published_at' => 'datetime',
         ];

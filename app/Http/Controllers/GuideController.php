@@ -22,7 +22,7 @@ class GuideController extends Controller
             ? Category::where('slug', $request->string('categoria'))->first()
             : null;
 
-        return Inertia::render('guides/index', [
+        return Inertia::render('public/guides/index', [
             'guides' => $this->guides->search($request->string('q')->value() ?: null, $category),
             'categories' => $this->categories->listWithPublishedGuides(),
             'filters' => [
@@ -34,7 +34,7 @@ class GuideController extends Controller
 
     public function show(string $slug): Response
     {
-        return Inertia::render('guides/show', [
+        return Inertia::render('public/guides/show', [
             'guide' => $this->guides->findPublishedBySlug($slug),
         ]);
     }
